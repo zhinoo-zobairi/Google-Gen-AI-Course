@@ -1,4 +1,4 @@
-What Are Embeddings?
+## What Are Embeddings?
 
 Embeddings are **numerical representations** of real-world data, such as:
 - Text
