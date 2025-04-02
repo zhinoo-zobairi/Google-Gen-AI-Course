@@ -8,10 +8,10 @@ My goal is to build a **reusable personal archive** and **share knowledge with o
 
 ## Topics Covered
 
-| Day | Title | Key Concepts |
-|-----|-------|--------------|
+| Day | Title |
+|-----|-------|
 | 1   |  [Foundational LLMs & Text Generation](./day1/foundational-llms.md), [Prompt Engineering](./day1/prompt-engineering.md)
-| 2   | TBD | ... |
-| 3   | TBD | ... |
-| 4   | TBD | ... |
-| 5   | TBD | ... |
+| 2   | TBD |
+| 3   | TBD |
+| 4   | TBD |
+| 5   | TBD |
