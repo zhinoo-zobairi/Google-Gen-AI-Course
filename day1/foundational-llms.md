@@ -334,7 +334,7 @@ P("rug") = 0.1 → Loss = -log(0.1) = 2.3 (higher = model was way off)
 |--------------------------|------------------------------------------------------------------|-------------------------------------------------------------------------|
 | **Architecture**         | Uses only the **decoder blocks** of the transformer             | Uses only the **encoder blocks** of the transformer                     |
 | **Token Generation**     | Generates **one token at a time**, left to right (autoregressive) | Processes **all tokens simultaneously**                                |
-| **Self-Attention Type**  | **Masked self-attention** — tokens can only attend to earlier tokens | **Full bidirectional self-attention** — each token sees all others     |
+| **Self-Attention Type**  | **Masked self-attention** tokens can only attend to earlier tokens | **Full bidirectional self-attention** — each token sees all others     |
 | **Masking Purpose**      | Prevents the model from **peeking at future tokens** during training | Replaces random tokens with `[MASK]` to teach the model to **fill in blanks** |
 | **Causal Mask Example**  | Triangular matrix: `[[1, 0, 0], [1, 1, 0], [1, 1, 1]]` ensures no future access | No causal mask — attention is unrestricted across the input             |
 | **Training Objective**   | **Autoregressive Language Modeling**: Predict the next word based on prior words | **Masked Language Modeling (MLM)**: Predict missing words using full context |
