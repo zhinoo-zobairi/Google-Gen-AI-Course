@@ -1,4 +1,4 @@
-LLMs in Specialized Domains – Cybersecurity & Medicine
+# LLMs in Specialized Domains – Cybersecurity & Medicine
 
 ## 1. Overview
 
