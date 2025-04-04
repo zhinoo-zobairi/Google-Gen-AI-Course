@@ -14,4 +14,4 @@ My goal is to build a **reusable personal archive** and **share knowledge with o
 | 2   | [Embeddings & Vector Stores](./day2/embeddings-vector-stores.md) |
 | 3   | [Agents](./day3/agents.md) |
 | 4   | [Solving Domain Specific Problems Using LLMs](./day4/Solving-Domain-Specific-Problems-Using-LLMs.md) |
-| 5   | TBD |
+| 5   | [Operationalizing Generative AI on Vertex AI using MLOps](./day5/Operationalizing-Gen-AI-on-Vertex-AI-using-MLOps.md) |
