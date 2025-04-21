@@ -537,7 +537,7 @@ You customize the QueryEncoder (sometimes along with the DocEncoder) on your own
 
 ⸻
 
-![alt text](offlineVsonline.png)
+![alt text](images/offlineVsonline.png)
 ### Diagram: Dual Encoder RAG Flow with Offline Indexing + Online Retrieval
 
 This diagram shows how a dual encoder architecture powers a RAG pipeline using the Gecko embedding model. On the **left**, documents are preprocessed and split into chunks, which are passed through the **Document Encoder** to produce vector embeddings stored in a **Vector Database** — this happens **offline** or ahead of time.
@@ -550,7 +550,7 @@ On the **right**, a **Query Encoder** processes incoming user queries in real-ti
 - Online query embedding + similarity search
 - RAG architecture with LLM response generation
 
-![alt text](text-to-embedding.png)
+![alt textimages/text-to-embedding.png)
 
 ## From Text to Embedding: Tokenization, Indexing, and One-Hot
 > ## 🧭 Setting the Stage: Encoders vs Embeddings
@@ -694,7 +694,7 @@ This matrix is updated during training and becomes a lookup table that maps each
 ## Classic Algorithms for Word Embeddings
 
 
-## 🧭 Word Embedding Models: Summary Table
+## Word Embedding Models: Summary Table
 
 All of the following models are designed to **learn an embedding matrix** — a lookup table of dense word vectors. They differ in *how* they learn those vectors.
 
@@ -817,7 +817,7 @@ Instead of predicting the center word from context, we use the center word to pr
 - Better for rare words
 - Useful for small datasets
 
-![Skip-Gram vs CBOW](CBOW-Vs-Skip-Gram.png)
+![Skip-Gram vs CBOWimages/CBOW-Vs-Skip-Gram.png)
 
 ## Example: The Skip-Gram Task
 
@@ -876,7 +876,7 @@ The model updates:
   - Use embeddings in downstream models
   - Visualize them using dimensionality reduction
 
-![Word2Vec Embeddings](Word2Vec-word.png)
+![Word2Vec Embeddingsimages/Word2Vec-word.png)
 
 ---
 
@@ -1003,7 +1003,7 @@ It builds on GloVe’s ideas but focuses on **scaling word embeddings to huge da
 
 ---
 
-## 🧠 Core Idea
+## Core Idea
 
 Like GloVe, SWIVEL uses a **co-occurrence matrix**.  
 But it introduces two major innovations:
@@ -1111,3 +1111,335 @@ Updates:
 This helps SWIVEL:
 - Handle rare and unseen word pairs better
 - Avoid overfitting to only common words
+
+## Document Embeddings: From Shallow Tricks to Deep Semantics
+
+Document embeddings aim to represent **a whole document** (or paragraph) as a dense, low-dimensional vector that captures its meaning. This allows us to perform:
+- Semantic Search
+- Topic Discovery
+- Classification
+- Clustering
+
+---
+
+## Shallow Bag-of-Words (BoW) Embeddings
+
+Early methods assumed documents were **just bags of words**, ignoring order and context.
+
+### Common BoW Techniques
+
+| Model | Idea | Weakness |
+|-------|------|----------|
+| **TF-IDF** | Term Frequency × Inverse Document Frequency | Sparse, ignores order & meaning |
+| **LSA** | Latent Semantic Analysis on word-doc co-occurrence matrix | Linear, context-free |
+| **LDA** | Latent Dirichlet Allocation, topic model with Bayesian network | Not robust for short docs |
+| **BM25** | Smarter TF-IDF-based ranking | Still BoW, but strong baseline today |
+
+> 🔎 BoW embeddings are easy to compute, but fail to capture word order or deep semantic meaning.
+
+---
+
+## Doc2Vec: Adding Paragraph Embeddings to Word2Vec
+
+Doc2Vec (2014) extended Word2Vec by adding a **paragraph ID embedding** to the model.
+
+### Training Concept:
+1. Each paragraph gets a unique embedding vector.
+2. During training, this paragraph vector is **averaged or concatenated** with word vectors.
+3. The model then tries to **predict a random word** from the paragraph.
+4. After training, you can use the paragraph vector as its embedding!
+
+For **new documents**, inference is required to generate the doc vector.
+
+![alt text](images/Doc2Vec.png)
+
+---
+
+### Deep Pretrained Language Models (LLMs)
+
+With transformers, things changed drastically.
+
+> Instead of training per-document, we now use **massive LLMs** like BERT, T5, Gemini to **generate contextual embeddings**.
+
+---
+
+#### Key Innovations
+
+1. **Bidirectional deep neural networks** (like BERT)
+2. **Pre-training on massive unlabeled corpora**
+3. Use of **subword tokenizers**
+4. **Fine-tuning** for downstream tasks
+
+---
+
+#### BERT Pretraining
+
+BERT was pretrained on two tasks:
+- **Masked Language Modeling (MLM)**: Predict masked words using left + right context
+- **Next Sentence Prediction (NSP)**: Predict whether sentence B follows A
+
+For embeddings:
+- The special `[CLS]` token's output vector is used as the **document embedding**.
+
+![alt text](images/BERT.png)
+---
+
+#### Fine-Tuned Embedding Models
+
+| Model | Built On | Optimized For |
+|-------|----------|----------------|
+| Sentence-BERT | BERT | Sentence similarity |
+| SimCSE | BERT | Contrastive learning for embeddings |
+| E5 | T5 | Unified embedding for queries & docs |
+| GTR | T5 variants | High-quality retrieval |
+| Gemini Embeddings | Gemini model | State-of-the-art across benchmarks |
+
+> Many of these models live on platforms like **Vertex AI**, HuggingFace, or TensorFlow Hub.
+
+---
+
+#### Embedding Model Families
+
+![alt text](images/Embedding_Models.png)
+---
+
+## Single vs Multi-vector Encoders
+
+| Type | Examples | Description |
+|------|----------|-------------|
+| **Single Vector** | BERT, GTR, ST5 | Output a single vector per input |
+| **Multi Vector** | ColBERT, XTR, ColPali | Output multiple vectors per input (e.g., per token) |
+
+- Multi-vector models boost **retrieval power** at cost of speed/storage
+- ColPali even supports **text + image** documents (multi-modal)
+
+---
+
+## Why Contextual Embeddings Are Better
+
+- “Bank” in **“river bank”** and **“bank account”** will have **different vectors**
+- Deep models understand **context**, syntax, and even world knowledge
+- Much better performance than BoW in nearly all tasks
+
+---
+
+## Use in Production (e.g., Vertex AI)
+
+You can embed text with:
+- Google Vertex AI SDK
+- Tensorflow Hub (e.g., Sentence-T5)
+- LangChain integrations
+- BigQuery UDFs
+
+---
+
+## Image, Multimodal & Structured Data Embeddings
+
+Embeddings aren't just for text! We can embed **images, structured data**, and even **both together** in the same vector space.
+
+---
+
+## Image Embeddings 🖼️ 
+
+### How are they created?
+
+Image embeddings are often extracted from **CNNs or Vision Transformers** trained on classification tasks (like ImageNet).
+
+- We use the **penultimate layer** (just before the output softmax) as the embedding.
+- This layer captures **discriminative features** — shapes, edges, textures — useful for downstream tasks.
+
+These embeddings can then be:
+- Compared with other image embeddings
+- Used for image retrieval
+- Input to multimodal systems
+
+---
+
+## Multimodal Embeddings
+
+Multimodal embeddings bring together different **data types** — like text and image — into a **shared latent space**.
+
+### How?
+
+- First, compute **unimodal embeddings** (text + image separately).
+- Then, train a model that **aligns** them — learns to bring semantically related text and images **closer together**.
+
+This enables:
+- Text-to-image search
+- Image-to-text matching
+- Joint understanding of visual + textual context
+
+---
+
+### Example: ColPali
+
+- Learns a joint embedding space across **web pages, PDFs, screenshots**, and **text queries**
+- Skips OCR or layout pre-processing
+- Embeds content as **it looks to a user**, improving relevance and real-world matching
+
+---
+
+## Structured Data Embeddings
+
+Structured data = Tables, spreadsheets, rows with well-defined columns  
+(Think: CSVs, database tables)
+
+---
+
+### General Structured Data
+
+Each **row** can be embedded using **dimensionality reduction techniques** like:
+- PCA (Principal Component Analysis)
+- Autoencoders
+- Tabular deep learning models
+
+This helps with:
+- Anomaly detection (e.g., sensors behaving weirdly)
+- Feeding embeddings into classifiers instead of raw high-dimensional input
+
+> Great when you don’t have tons of labeled training data!
+
+---
+
+### User–Item Structured Data (Recommenders)
+
+We often deal with:
+- User features (e.g., age, gender, location)
+- Item features (e.g., product name, category)
+- Interaction data (e.g., rating, click, view time)
+
+This use case **learns embeddings** for users and items in the **same space** to power:
+- Movie recommendations
+- Product ranking
+- Article suggestions
+
+Can be combined with **unstructured embeddings** (e.g., text description of a product or image of the item).
+
+---
+
+## Why This Matters
+
+Everything — words, images, rows of data — can be **mapped to a vector**.
+
+Once you’re in that space, you can:
+- Compare them via cosine similarity
+- Cluster similar things together
+- Train downstream ML models
+- Power search, retrieval, and recommender systems
+
+---
+## Graph Embeddings
+
+Graph embeddings are a way to turn **nodes in a graph** into dense vectors that reflect their **content and structure** — not just the node's features, but also its **relationships**.
+
+### Real-World Example
+
+Think of a **social network**:
+- Each person = node
+- Each connection/friendship = edge
+
+A graph embedding represents:
+- **Who you are** (your own features)
+- **Who you know** (your neighbors)
+- **How you're connected** to others
+
+If two people are connected or share many common neighbors, their embeddings will be **close together**.
+
+---
+
+### What Can You Do With Them?
+
+- Node classification (e.g. user type)
+- Link prediction (e.g. who you might follow next)
+- Graph classification (e.g. molecule categories)
+- Recommender systems
+- Clustering
+- Search and retrieval
+
+---
+
+### Popular Algorithms
+
+| Algorithm    | Description                                      |
+|--------------|--------------------------------------------------|
+| DeepWalk     | Random walks on graphs + Word2Vec                |
+| Node2Vec     | Biased walks for more control over neighborhood  |
+| LINE         | Preserves first and second order proximity       |
+| GraphSAGE    | Aggregates features from local neighbors         |
+
+---
+
+## Training Embeddings: Architectures & Strategies
+
+Most modern embedding models are trained using a **dual encoder** architecture — also known as **two-tower models**.
+
+| Modality       | Query Encoder         | Document Encoder        |
+|----------------|------------------------|--------------------------|
+| Text Q&A       | Question encoder        | Answer encoder           |
+| Multimodal     | Text encoder            | Image encoder            |
+
+---
+
+### Architecture Variants
+
+| Model     | Description                                                 |
+|-----------|-------------------------------------------------------------|
+| SDE       | Siamese — One encoder shared between query and doc         |
+| ADE       | Asymmetric — Separate encoders                              |
+| ADE-STE   | Shared Token Embedder                                       |
+| ADE-FTE   | Frozen Token Embedder                                       |
+| ADE-SPL   | Frozen Token + Shared Projection Layer                      |
+
+![alt text](images/dual_encoders.png)
+
+---
+
+### How Are These Trained?
+
+With **Contrastive Loss**:
+- Goal: **Pull positive pairs closer**, push **negative pairs apart**
+- Format: `<input, positive, [negative]>`
+
+---
+
+### Training Stages
+
+| Stage        | Description                                           |
+|--------------|-------------------------------------------------------|
+| **Pretraining** | Unsupervised — trained on massive unlabelled text     |
+| **Fine-tuning** | Supervised — domain-specific labeled pairs (Q&A, etc.) |
+
+Modern practice:
+- Start from a **foundation model** (BERT, GPT, T5, Gemini)
+- Fine-tune using:
+  - Human-labeled data
+  - Synthetic (LLM-generated) pairs
+  - Distillation (from teacher model)
+  - Hard negative mining
+
+---
+
+## Using Embeddings for Downstream Tasks
+
+Embeddings can be used as input to:
+- Classification layers (e.g., softmax)
+- NER models
+- Retrieval systems
+
+They can be:
+- **Frozen** — when data is small
+- **Fine-tuned** — when adapting to new tasks
+- **Trained from scratch** — when starting fresh
+
+---
+
+### Tools
+
+- **Vertex AI** lets you:
+  - Customize and fine-tune Google’s embedding models
+  - Load from TensorFlow Hub (`tfhub`)
+  - Use in Keras pipelines
+
+---
+![alt text](images/vector_similarity.png)
+![alt text](images/LSH.png)
